@@ -115,13 +115,7 @@ const deleteCourseController = async(req,res)=>{
         })
     }
     let oneExistingStudent = await Course.findByIdAndDelete({_id: id})
-    if(!oneExistingStudent){
-       return res.status(400).json({
-            success: false,
-            message: "student not founds"
-        })  
-    } 
-     return res.status(200).json({
+      return res.status(200).json({
       success: true,
       message: " student was deleted successfully",
       data: oneExistingStudent
