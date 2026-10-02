@@ -101,7 +101,7 @@ const UpdateStudentController = async(req,res)=>{
   })   
 
 }
-// get one student under course and update profile
+// get one student under course and delete profile
 const deleteStudentController = async(req,res)=>{
     let{id}= req.params
     if(!id){
