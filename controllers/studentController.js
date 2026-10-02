@@ -9,6 +9,24 @@ const createStudentController = async (req,res)=>{
             message: "please fill all the fields"
         })
     }
+    // Student must be 18 or older
+        if (age < 18) {
+            return res.status(400).json({
+                success: false,
+                message: "Student must be 18 years or older"
+            })
+        }
+        // Check duplicate email
+        let existingStudent = await Student.findOne({ email })
+
+        if (existingStudent) {
+            return res.status(400).json({
+                success: false,
+                message: "Same email cannot create another student"
+            })
+        } 
+ 
+    
     let student = new Student({
         name: name,
         email: email,
@@ -21,28 +39,101 @@ const createStudentController = async (req,res)=>{
         message: "create student succcessfully.." 
        })
 }
-// get one student and endroll course id 
-const getStudentAndHisCourseId = async(req,res)=>{
-  let {id}= req.params
-  if(!id){
-     return res.status(400).json({
+// get all student
+const getAllStudentsController = async (req,res)=>{
+    let existingStudent = await Student.find({}).populate('enrolledCourses')
+    if(!existingStudent){
+         return res.status(400).json({
             success: false,
-            message: "please fill all the fields"
+            message: "student not founds"
         })
-  }
-  let existingCourses = await Course.find({ enrolledCourses: id}).populate('Course')
-  if(!existingCourses){
-    return res.status(400).json({
-            success: false,
-            message: "no course found"
-        })
-  }
-  return res.status(200).json({
-    success: true,
-    message: "successfully endrolled..",
-    data: existingCourses
+    }
+    return res.status(200).json({
+      success: true,
+      message: `${existingStudent.length} students  were found`,
+      data: existingStudent
   })
+
+}
+// get one student
+const getOneStudentController = async(req,res)=>{
+    let{id}= req.params
+    if(!id){
+         return res.status(400).json({
+            success: false,
+            message: "student not founds"
+        })
+    }
+    let oneExistingStudent = await Student.findById({_id: id})
+    if(!oneExistingStudent){
+       return res.status(400).json({
+            success: false,
+            message: "student not founds"
+        })  
+    } 
+     return res.status(200).json({
+      success: true,
+      message: " student was  found",
+      data: oneExistingStudent
+  })   
+
+}
+// get one student under course and update profile
+const UpdateStudentController = async(req,res)=>{
+    let{id}= req.params
+    if(!id){
+         return res.status(400).json({
+            success: false,
+            message: "student not founds"
+        })
+    }
+    let oneExistingStudent = await Student.findByIdAndUpdate({_id: id},req.body,{new: true})
+    if(!oneExistingStudent){
+       return res.status(400).json({
+            success: false,
+            message: "student not founds"
+        })  
+    } 
+     return res.status(200).json({
+      success: true,
+      message: " student was updated",
+      data: oneExistingStudent
+  })   
+
+}
+// get one student under course and update profile
+const deleteStudentController = async(req,res)=>{
+    let{id}= req.params
+    if(!id){
+         return res.status(400).json({
+            success: false,
+            message: "student not founds"
+        })
+    }
+    let oneExistingStudent = await Student.findByIdAndDelete({_id: id})
+    if(!oneExistingStudent){
+       return res.status(400).json({
+            success: false,
+            message: "student not founds"
+        })  
+    } 
+     return res.status(200).json({
+      success: true,
+      message: " student was deleted successfully",
+      data: oneExistingStudent
+  })   
+
 }
 
 
-module.exports= {createStudentController,getStudentAndHisCourseId}
+
+
+
+
+
+
+
+
+
+
+module.exports= {createStudentController,getAllStudentsController,getOneStudentController,UpdateStudentController,deleteStudentController}
