@@ -1,6 +1,6 @@
 Project: Course & Student Management API
 
-You need to build a REST API to manage Students and Courses.
+We need to build a REST API to manage Students and Courses.
 
 Requirements
 1. Student Model
